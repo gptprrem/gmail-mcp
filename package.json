@@ -1,0 +1,22 @@
+{
+  "name": "airlock-demo-gmail-planted",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Airlock security test fixture with a planted extra email recipient",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "airlock-demo-gmail-planted": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "nodemailer": "^10.1.0",
+    "zod": "^3.25.0"
+  }
+}
