@@ -1,67 +1,52 @@
-# Gmail MCP: normal demo
+# Gmail MCP
 
-Sends a real plain-text email through Gmail SMTP. The only recipient is the
-`to` address supplied to `send_email`; there is no CC or BCC.
+A stdio MCP server for sending plain-text email through Gmail SMTP.
 
 ## Setup
 
-Use a dedicated demo Gmail account with 2-Step Verification enabled. Generate an
-App Password at <https://myaccount.google.com/apppasswords>. Some managed accounts
-and accounts with additional security restrictions do not offer App Passwords.
-This is an App Password, not your normal Google password or an OAuth token.
-An App Password is not restricted to the OAuth `gmail.send` scope; treat it as a
-sensitive credential and revoke it after the demo.
+Requires Node.js 22 or newer and a Gmail account with 2-Step Verification.
+Generate an App Password at <https://myaccount.google.com/apppasswords>.
+Some managed accounts do not support App Passwords. Use an App Password, not
+your normal Google password. App Passwords are not send-only OAuth tokens.
 
-Provide these environment variables through local secret configuration:
+Set these variables in the environment of the process launching the server:
 
-| Variable | Value |
+| Variable | Description |
 |---|---|
-| `GMAIL_USER` | The dedicated demo Gmail address |
-| `GMAIL_APP_PASSWORD` | Its 16-character App Password, without display spaces |
+| `GMAIL_USER` | Sender's Gmail address |
+| `GMAIL_APP_PASSWORD` | App Password without display spaces |
 
-Do not commit credentials, paste them into chat, pass them as tool arguments, or
-put them in a reviewed source archive. This server does not automatically load
-an `.env` file.
+Keep credentials in local secret configuration, not source code or tool
+arguments. The server does not automatically load `.env` files.
+
+From the repository root:
 
 ```bash
-cd demo/tools/gmail-mcp-normal
 npm ci
 npm start
 ```
 
-`npm start` starts a stdio MCP server, not an interactive email prompt. Configure
-your MCP client to run `node` with the absolute path to `index.js` and supply the
-environment variables through its local secret configuration.
+Configure your MCP client to launch `node` with the absolute path to `index.js`.
+The server communicates over stdin/stdout; it is not an email prompt.
 
-Ask the client: "Send an email to my demo inbox with subject Demo invoice and
-body Total: 42." The tool accepts `{ to, subject, body }` and reports SMTP
-acceptance or an error. SMTP acceptance is not a guarantee of final delivery.
-Only send to consenting demo recipients.
+## Tool
 
-## Airlock
+`send_email` accepts a recipient, subject, and plain-text body:
 
-Submit this folder as its own GitHub repository root, not a subdirectory URL.
-It is intentionally marked `private` to prevent accidental npm publication.
-No repository has been published automatically.
-
-For contained execution, the signed policy must permit `smtp.gmail.com:465` and
-the Gmail environment variables. Those variables must also be present in the
-environment inherited by the process launching Airlock. The server explicitly
-uses `HTTPS_PROXY` / `HTTP_PROXY` for SMTP tunneling. SMTP through Airlock's
-Smokescreen proxy has not been verified; a proxy can restrict CONNECT ports.
-Do not bypass containment if delivery fails. `--no-enforce` only skips Claude's
-managed settings, not the sandbox or network policy.
-
-The scanner never runs this server. Nodemailer SMTP capability detection and
-policy compilation must be confirmed in the report; do not assume a complete
-profile just because the scan finished.
-
-## Offline Tests
-
-Install dependencies in both Gmail demo folders, then from the repository root:
-
-```bash
-node --test demo/gmail.test.js
+```json
+{
+	"to": "recipient@example.com",
+	"subject": "Invoice",
+	"body": "Total: 42"
+}
 ```
 
-Tests use dummy credentials and a fake mail transport. No emails are sent.
+The response reports SMTP acceptance or an error. Acceptance does not guarantee
+inbox delivery. Subjects and recipient addresses cannot contain newlines.
+Message bodies are limited to 100000 characters.
+
+## Connectivity
+
+Connects to `smtp.gmail.com:465` using TLS. Supports an HTTP CONNECT proxy through
+`HTTPS_PROXY` or `HTTP_PROXY`. The proxy must permit SMTP tunneling on port 465.
+Live delivery depends on account and network configuration.

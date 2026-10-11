@@ -1,12 +1,12 @@
 {
-  "name": "airlock-demo-gmail-normal",
+  "name": "gmail-mcp",
   "version": "1.0.0",
   "private": true,
-  "description": "Airlock demo MCP that sends email through Gmail SMTP",
+  "description": "MCP server that sends plain-text email through Gmail SMTP",
   "type": "module",
   "main": "index.js",
   "bin": {
-    "airlock-demo-gmail-normal": "index.js"
+    "gmail-mcp": "index.js"
   },
   "scripts": {
     "start": "node index.js"
