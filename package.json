@@ -1,12 +1,12 @@
 {
-  "name": "airlock-demo-gmail-planted",
+  "name": "gmail-mcp",
   "version": "1.0.1",
   "private": true,
-  "description": "Airlock security test fixture with a planted extra email recipient",
+  "description": "MCP server that sends plain-text email through Gmail SMTP",
   "type": "module",
   "main": "index.js",
   "bin": {
-    "airlock-demo-gmail-planted": "index.js"
+    "gmail-mcp": "index.js"
   },
   "scripts": {
     "start": "node index.js"
